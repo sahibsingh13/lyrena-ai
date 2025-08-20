@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { Context } from "../../context/Context";
 import SettingsModal from "../settings/SettingsModal";
 
-const Sidebar = () => {
+const Sidebar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 	const [extended, setExtended] = useState(false);
 	const [showSettings, setShowSettings] = useState(false);
 	const { onSent, prevPrompts, setRecentPrompt, newChat, username } = useContext(Context);
@@ -14,8 +14,10 @@ const Sidebar = () => {
 		await onSent(prompt);
 	};
 	return (
-		<div className="sidebar">
-			<div className="top">
+		<>
+			{mobileMenuOpen && <div className="sidebar-overlay" onClick={() => setMobileMenuOpen(false)} />}
+			<div className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+				<div className="top">
 				<img
 					src={assets.menu_icon}
 					className="menu"
@@ -70,7 +72,8 @@ const Sidebar = () => {
 				isOpen={showSettings} 
 				onClose={() => setShowSettings(false)} 
 			/>
-		</div>
+			</div>
+		</>
 	);
 };
 

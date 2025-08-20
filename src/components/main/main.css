@@ -57,6 +57,34 @@
     background-color: #e8f0fe;
     color: #1a73e8;
 }
+
+/* Setup Message Styles */
+.setup-message {
+    margin-top: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.setup-message p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Prevent input zoom on iOS */
+input[type="text"], 
+input[type="password"], 
+select, 
+textarea {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+}
 .main .nav img{
     width: 50px;
     border-radius: 50px;

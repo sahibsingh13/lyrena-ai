@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { assets } from "../../assets/assets";
 import "./main.css";
 import { Context } from "../../context/Context";
-const Main = () => {
+const Main = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 	const {
 		onSent,
 		recentPrompt,
@@ -13,9 +13,8 @@ const Main = () => {
 		input,
 		username,
 		selectedModel,
+		apiKey,
 	} = useContext(Context);
-	
-	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const handleCardClick = (promptText) => {
 			setInput(promptText);
@@ -30,8 +29,8 @@ const Main = () => {
 					<p>Lyrena AI</p>
 				</div>
 				<div className="nav-right">
-					{username && <span className="nav-username">👋 {username}</span>}
-					{selectedModel && <span className="nav-model">🤖 {selectedModel.toUpperCase()}</span>}
+					{username && apiKey && <span className="nav-username">👋 {username}</span>}
+					{selectedModel && apiKey && <span className="nav-model">🤖 {selectedModel.toUpperCase()}</span>}
 				</div>
 			</div>
 			<div className="main-container">
@@ -39,51 +38,14 @@ const Main = () => {
 					<>
 						<div className="greet">
 							<p>
-								<span>Hello , Dev </span>
+								<span>Hello{username ? `, ${username}` : ''} 👋</span>
 							</p>
-							<p>How Can i Help You Today?</p>
-						</div>
-						<div className="cards">
-							<div
-								className="card"
-								onClick={() =>
-									handleCardClick("Suggest Some Place To Visit In India.")
-								}
-							>
-								<p>Suggest Some Place To Visit In India.</p>
-								<img src={assets.compass_icon} alt="" />
-							</div>
-							<div
-								className="card"
-								onClick={() =>
-									handleCardClick(
-										"Explain the process of photosynthesis in simple terms"
-									)
-								}
-							>
-								<p>Explain the process of photosynthesis in simple terms </p>
-								<img src={assets.message_icon} alt="" />
-							</div>
-							<div
-								className="card"
-								onClick={() =>
-									handleCardClick("How do you create a responsive navbar using CSS and JavaScript?")
-								}
-							>
-								<p>How do you create a responsive navbar using CSS and JavaScript?</p>
-								<img src={assets.bulb_icon} alt="" />
-							</div>
-							<div
-								className="card"
-								onClick={() => {
-									handleCardClick(
-										"What are some essential skills for becoming a front-end developer?"
-									);
-								}}
-							>
-								<p>What are some essential skills for becoming a front-end developer?</p>
-								<img src={assets.code_icon} alt="" />
-							</div>
+							<p>How can I help you today?</p>
+							{!apiKey && (
+								<div className="setup-message">
+									<p>🔧 Click the settings icon in the sidebar to configure your OpenRouter API key and start chatting!</p>
+								</div>
+							)}
 						</div>
 					</>
 				) : (
