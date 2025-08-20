@@ -5,7 +5,7 @@ import { Context } from "../../context/Context";
 import SettingsModal from "../settings/SettingsModal";
 
 const Sidebar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
-	const [extended, setExtended] = useState(false);
+	const [extended, setExtended] = useState(true);
 	const [showSettings, setShowSettings] = useState(false);
 	const { onSent, prevPrompts, setRecentPrompt, newChat, username } = useContext(Context);
 
@@ -18,14 +18,22 @@ const Sidebar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 			{mobileMenuOpen && <div className="sidebar-overlay" onClick={() => setMobileMenuOpen(false)} />}
 			<div className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
 				<div className="top">
-				<img
-					src={assets.menu_icon}
-					className="menu"
-					alt="menu-icon"
-					onClick={() => {
-						setExtended((prev) => !prev);
-					}}
-				/>
+				<div className="sidebar-header">
+					<img
+						src={assets.menu_icon}
+						className="menu"
+						alt="menu-icon"
+						onClick={() => {
+							setExtended((prev) => !prev);
+						}}
+						title={extended ? "Collapse sidebar" : "Expand sidebar"}
+					/>
+					{extended && (
+						<div className="sidebar-title">
+							<h3>Lyrena AI</h3>
+						</div>
+					)}
+				</div>
 				{extended && username && (
 					<div className="username-display">
 						<p>
@@ -44,35 +52,43 @@ const Sidebar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 				</div>
 				{extended ? (
 					<div className="recent">
-						<p className="recent-title">Recent</p>
-						{prevPrompts.map((item, index) => {
-							return (
-								<div 
-									key={index}
-									onClick={()=>{
-                                    	loadPreviousPrompt(item)
-                                	}} 
-                                	className="recent-entry"
-                                >
-									<img src={assets.message_icon} alt="" />
-									<p>{item.length > 50 ? item.slice(0, 50) + '...' : item}</p>
-								</div>
-							);
-						})}
+						<p className="recent-title">Recent Chats</p>
+						{prevPrompts.length > 0 ? (
+							prevPrompts.map((item, index) => {
+								return (
+									<div 
+										key={index}
+										onClick={()=>{
+											loadPreviousPrompt(item)
+										}} 
+										className="recent-entry"
+										title={item}
+									>
+										<img src={assets.message_icon} alt="" />
+										<p>{item.length > 60 ? item.slice(0, 60) + '...' : item}</p>
+									</div>
+								);
+							})
+						) : (
+							<div className="no-recent">
+								<p>No recent chats</p>
+								<small>Start a new conversation to see it here</small>
+							</div>
+						)}
 					</div>
 				) : null}
 			</div>
 			<div className="bottom">
-				<div className="bottom-item recent-entry">
-					<img src={assets.question_icon} alt="" />
-					{extended ? <p>Help desk</p> : null}
+				<div className="bottom-item" title="Help & Support">
+					<img src={assets.question_icon} alt="Help" />
+					{extended ? <p>Help & Support</p> : null}
 				</div>
-				<div className="bottom-item recent-entry">
-					<img src={assets.history_icon} alt="" />
-					{extended ? <p>History</p> : null}
+				<div className="bottom-item" title="Chat History">
+					<img src={assets.history_icon} alt="History" />
+					{extended ? <p>Chat History</p> : null}
 				</div>
-				<div className="bottom-item recent-entry" onClick={() => setShowSettings(true)}>
-					<img src={assets.setting_icon} alt="" />
+				<div className="bottom-item" onClick={() => setShowSettings(true)} title="Settings">
+					<img src={assets.setting_icon} alt="Settings" />
 					{extended ? <p>Settings</p> : null}
 				</div>
 			</div>
