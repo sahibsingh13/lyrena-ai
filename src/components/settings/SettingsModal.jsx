@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Context } from "../../context/Context";
 import { getAvailableModels, getModelDisplayName } from "../../config/OpenRouter";
 import "./settingsModal.css";
@@ -17,11 +17,22 @@ const SettingsModal = ({ isOpen, onClose }) => {
 		setUsername 
 	} = useContext(Context);
 	
-	const [tempApiKey, setTempApiKey] = useState(apiKey || "");
-	const [tempUsername, setTempUsername] = useState(username || "");
-	const [tempModel, setTempModel] = useState(selectedModel || "gpt-3.5-turbo");
-	const [tempModels, setTempModels] = useState(selectedModels || ["gpt-3.5-turbo"]);
-	const [tempCompareMode, setTempCompareMode] = useState(compareMode || false);
+	const [tempApiKey, setTempApiKey] = useState("");
+	const [tempUsername, setTempUsername] = useState("");
+	const [tempModel, setTempModel] = useState("gpt-3.5-turbo");
+	const [tempModels, setTempModels] = useState(["gpt-3.5-turbo"]);
+	const [tempCompareMode, setTempCompareMode] = useState(false);
+
+	// Load current values when modal opens
+	useEffect(() => {
+		if (isOpen) {
+			setTempApiKey(apiKey || "");
+			setTempUsername(username || "");
+			setTempModel(selectedModel || "gpt-3.5-turbo");
+			setTempModels(selectedModels || ["gpt-3.5-turbo"]);
+			setTempCompareMode(compareMode || false);
+		}
+	}, [isOpen, apiKey, username, selectedModel, selectedModels, compareMode]);
 
 	const handleSave = () => {
 		// Save to local storage with username hash
