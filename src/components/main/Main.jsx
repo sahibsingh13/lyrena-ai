@@ -51,7 +51,9 @@ const Main = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 				) : (
 					<div className="result">
 						<div className="result-title">
-							<img src={assets.user} alt="" />
+							<div className="user-message-avatar">
+								{username ? username.charAt(0).toUpperCase() : 'U'}
+							</div>
 							<p>{recentPrompt}</p>
 						</div>
 						<div className="result-data">

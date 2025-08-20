@@ -15,6 +15,8 @@ const ContextProvider = (props) => {
 	const [username, setUsername] = useState("");
 	const [apiKey, setApiKey] = useState("");
 	const [selectedModel, setSelectedModel] = useState("gpt-3.5-turbo");
+	const [selectedModels, setSelectedModels] = useState(["gpt-3.5-turbo"]);
+	const [compareMode, setCompareMode] = useState(false);
 
 	// Load settings from localStorage on component mount
 	useEffect(() => {
@@ -25,8 +27,12 @@ const ContextProvider = (props) => {
 			const userHash = btoa(savedUsername || "default-user");
 			const savedApiKey = localStorage.getItem(`lyrena_api_key_${userHash}`) || "";
 			const savedModel = localStorage.getItem(`lyrena_model_${userHash}`) || "gpt-3.5-turbo";
+			const savedModels = JSON.parse(localStorage.getItem(`lyrena_models_${userHash}`) || '["gpt-3.5-turbo"]');
+			const savedCompareMode = localStorage.getItem(`lyrena_compare_${userHash}`) === 'true';
 			setApiKey(savedApiKey);
 			setSelectedModel(savedModel);
+			setSelectedModels(savedModels);
+			setCompareMode(savedCompareMode);
 		}
 	}, []);
 
@@ -99,6 +105,10 @@ const ContextProvider = (props) => {
 		setApiKey,
 		selectedModel,
 		setSelectedModel,
+		selectedModels,
+		setSelectedModels,
+		compareMode,
+		setCompareMode,
 	};
 
 	return (

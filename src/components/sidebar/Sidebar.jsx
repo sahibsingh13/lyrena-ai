@@ -28,7 +28,12 @@ const Sidebar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 				/>
 				{extended && username && (
 					<div className="username-display">
-						<p>👋 {username}</p>
+						<p>
+							<div className="user-avatar">
+								{username.charAt(0).toUpperCase()}
+							</div>
+							{username}
+						</p>
 					</div>
 				)}
 				<div className="new-chat">
@@ -42,11 +47,15 @@ const Sidebar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 						<p className="recent-title">Recent</p>
 						{prevPrompts.map((item, index) => {
 							return (
-								<div onClick={()=>{
-                                    loadPreviousPrompt(item)
-                                }} className="recent-entry">
+								<div 
+									key={index}
+									onClick={()=>{
+                                    	loadPreviousPrompt(item)
+                                	}} 
+                                	className="recent-entry"
+                                >
 									<img src={assets.message_icon} alt="" />
-									<p>{item.slice(0, 18)}...</p>
+									<p>{item.length > 50 ? item.slice(0, 50) + '...' : item}</p>
 								</div>
 							);
 						})}

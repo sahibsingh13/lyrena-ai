@@ -9,6 +9,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
 		setApiKey, 
 		selectedModel, 
 		setSelectedModel, 
+		selectedModels,
+		setSelectedModels,
+		compareMode,
+		setCompareMode,
 		username, 
 		setUsername 
 	} = useContext(Context);
@@ -16,6 +20,8 @@ const SettingsModal = ({ isOpen, onClose }) => {
 	const [tempApiKey, setTempApiKey] = useState(apiKey || "");
 	const [tempUsername, setTempUsername] = useState(username || "");
 	const [tempModel, setTempModel] = useState(selectedModel || "gpt-3.5-turbo");
+	const [tempModels, setTempModels] = useState(selectedModels || ["gpt-3.5-turbo"]);
+	const [tempCompareMode, setTempCompareMode] = useState(compareMode || false);
 
 	const handleSave = () => {
 		// Save to local storage with username hash
@@ -23,11 +29,15 @@ const SettingsModal = ({ isOpen, onClose }) => {
 		localStorage.setItem(`lyrena_api_key_${userHash}`, tempApiKey);
 		localStorage.setItem(`lyrena_username`, tempUsername);
 		localStorage.setItem(`lyrena_model_${userHash}`, tempModel);
+		localStorage.setItem(`lyrena_models_${userHash}`, JSON.stringify(tempModels));
+		localStorage.setItem(`lyrena_compare_${userHash}`, tempCompareMode.toString());
 		
 		// Update context
 		setApiKey(tempApiKey);
 		setUsername(tempUsername);
 		setSelectedModel(tempModel);
+		setSelectedModels(tempModels);
+		setCompareMode(tempCompareMode);
 		
 		onClose();
 	};
@@ -36,7 +46,19 @@ const SettingsModal = ({ isOpen, onClose }) => {
 		setTempApiKey(apiKey || "");
 		setTempUsername(username || "");
 		setTempModel(selectedModel || "gpt-3.5-turbo");
+		setTempModels(selectedModels || ["gpt-3.5-turbo"]);
+		setTempCompareMode(compareMode || false);
 		onClose();
+	};
+
+	const handleModelToggle = (modelKey) => {
+		if (tempModels.includes(modelKey)) {
+			if (tempModels.length > 1) {
+				setTempModels(tempModels.filter(m => m !== modelKey));
+			}
+		} else {
+			setTempModels([...tempModels, modelKey]);
+		}
 	};
 
 	if (!isOpen) return null;
@@ -92,8 +114,49 @@ const SettingsModal = ({ isOpen, onClose }) => {
 							))}
 						</select>
 						<small className="setting-help">
-							Choose your preferred AI model for conversations
+							Choose your preferred AI model for single conversations
 						</small>
+					</div>
+
+					<div className="setting-group">
+						<div className="setting-header">
+							<label>Model Comparison Mode</label>
+							<div className="toggle-switch">
+								<input
+									type="checkbox"
+									id="compareMode"
+									checked={tempCompareMode}
+									onChange={(e) => setTempCompareMode(e.target.checked)}
+								/>
+								<label htmlFor="compareMode" className="toggle-label"></label>
+							</div>
+						</div>
+						<small className="setting-help">
+							Compare responses from multiple AI models side by side
+						</small>
+						
+						{tempCompareMode && (
+							<div className="model-selection">
+								<p className="model-selection-title">Select Models to Compare:</p>
+								<div className="model-grid">
+									{getAvailableModels().map((modelKey) => (
+										<div
+											key={modelKey}
+											className={`model-item ${tempModels.includes(modelKey) ? 'selected' : ''}`}
+											onClick={() => handleModelToggle(modelKey)}
+										>
+											<div className="model-checkbox">
+												{tempModels.includes(modelKey) && '✓'}
+											</div>
+											<span className="model-name">{getModelDisplayName(modelKey)}</span>
+										</div>
+									))}
+								</div>
+								<small className="setting-help">
+									Select 2-4 models for optimal comparison experience
+								</small>
+							</div>
+						)}
 					</div>
 				</div>
 
