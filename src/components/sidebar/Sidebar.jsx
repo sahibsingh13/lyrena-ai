@@ -2,9 +2,12 @@ import "./sidebar.css";
 import { assets } from "../../assets/assets";
 import { useContext, useState } from "react";
 import { Context } from "../../context/Context";
+import SettingsModal from "../settings/SettingsModal";
+
 const Sidebar = () => {
 	const [extended, setExtended] = useState(false);
-	const { onSent, prevPrompts, setRecentPrompt, newChat } = useContext(Context);
+	const [showSettings, setShowSettings] = useState(false);
+	const { onSent, prevPrompts, setRecentPrompt, newChat, username } = useContext(Context);
 
 	const loadPreviousPrompt = async (prompt) => {
 		setRecentPrompt(prompt);
@@ -21,6 +24,11 @@ const Sidebar = () => {
 						setExtended((prev) => !prev);
 					}}
 				/>
+				{extended && username && (
+					<div className="username-display">
+						<p>👋 {username}</p>
+					</div>
+				)}
 				<div className="new-chat">
 					<img src={assets.plus_icon} alt="" onClick={()=>{
                         newChat()
@@ -52,11 +60,16 @@ const Sidebar = () => {
 					<img src={assets.history_icon} alt="" />
 					{extended ? <p>History</p> : null}
 				</div>
-				<div className="bottom-item recent-entry">
+				<div className="bottom-item recent-entry" onClick={() => setShowSettings(true)}>
 					<img src={assets.setting_icon} alt="" />
 					{extended ? <p>Settings</p> : null}
 				</div>
 			</div>
+			
+			<SettingsModal 
+				isOpen={showSettings} 
+				onClose={() => setShowSettings(false)} 
+			/>
 		</div>
 	);
 };

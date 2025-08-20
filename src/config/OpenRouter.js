@@ -20,22 +20,24 @@ export const AVAILABLE_MODELS = {
 // Default model - using GPT-3.5 Turbo as it's cost-effective and reliable
 const DEFAULT_MODEL = AVAILABLE_MODELS["gpt-3.5-turbo"];
 
-async function runChat(prompt, model = DEFAULT_MODEL) {
+async function runChat(prompt, model = DEFAULT_MODEL, userApiKey = null) {
   try {
-    if (!API_KEY || API_KEY === "YOUR_OPENROUTER_API_KEY") {
-      throw new Error("OpenRouter API key not configured. Please set VITE_OPENROUTER_API_KEY in your .env file.");
+    const activeApiKey = userApiKey || API_KEY;
+    
+    if (!activeApiKey || activeApiKey === "YOUR_OPENROUTER_API_KEY") {
+      throw new Error("OpenRouter API key not configured. Please add your API key in Settings.");
     }
 
     const response = await fetch(OPENROUTER_API_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${API_KEY}`,
+        "Authorization": `Bearer ${activeApiKey}`,
         "Content-Type": "application/json",
         "HTTP-Referer": window.location.origin,
         "X-Title": "Lyrena AI"
       },
       body: JSON.stringify({
-        model: model,
+        model: AVAILABLE_MODELS[model] || model,
         messages: [
           {
             role: "system",

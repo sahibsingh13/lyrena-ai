@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import runChat from "../config/OpenRouter";
 
 export const Context = createContext();
@@ -10,6 +10,25 @@ const ContextProvider = (props) => {
 	const [showResults, setShowResults] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [resultData, setResultData] = useState("");
+	
+	// New state for settings
+	const [username, setUsername] = useState("");
+	const [apiKey, setApiKey] = useState("");
+	const [selectedModel, setSelectedModel] = useState("gpt-3.5-turbo");
+
+	// Load settings from localStorage on component mount
+	useEffect(() => {
+		const savedUsername = localStorage.getItem("lyrena_username") || "";
+		setUsername(savedUsername);
+		
+		if (savedUsername) {
+			const userHash = btoa(savedUsername || "default-user");
+			const savedApiKey = localStorage.getItem(`lyrena_api_key_${userHash}`) || "";
+			const savedModel = localStorage.getItem(`lyrena_model_${userHash}`) || "gpt-3.5-turbo";
+			setApiKey(savedApiKey);
+			setSelectedModel(savedModel);
+		}
+	}, []);
 
 	const delayPara = (index, nextWord) => {
 		setTimeout(function () {
@@ -27,12 +46,12 @@ const ContextProvider = (props) => {
 		setShowResults(true);
         let response;
         if(prompt !== undefined){
-            response = await runChat(prompt);
+            response = await runChat(prompt, selectedModel, apiKey);
             setRecentPrompt(prompt)
         }else{
             setPrevPrompts(prev=>[...prev,input]);
             setRecentPrompt(input);
-            response=await runChat(input);
+            response=await runChat(input, selectedModel, apiKey);
         }
 		
 		try {
@@ -74,6 +93,12 @@ const ContextProvider = (props) => {
 		loading,
 		resultData,
 		newChat,
+		username,
+		setUsername,
+		apiKey,
+		setApiKey,
+		selectedModel,
+		setSelectedModel,
 	};
 
 	return (

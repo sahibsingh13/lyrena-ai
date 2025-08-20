@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { assets } from "../../assets/assets";
 import "./main.css";
 import { Context } from "../../context/Context";
@@ -11,7 +11,11 @@ const Main = () => {
 		resultData,
 		setInput,
 		input,
+		username,
+		selectedModel,
 	} = useContext(Context);
+	
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const handleCardClick = (promptText) => {
 			setInput(promptText);
@@ -19,8 +23,16 @@ const Main = () => {
 	return (
 		<div className="main">
 			<div className="nav">
-				<p>Lyrena AI</p>
-				<img src={assets.user} alt="" />
+				<div className="nav-left">
+					<button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+						<img src={assets.menu_icon} alt="Menu" />
+					</button>
+					<p>Lyrena AI</p>
+				</div>
+				<div className="nav-right">
+					{username && <span className="nav-username">👋 {username}</span>}
+					{selectedModel && <span className="nav-model">🤖 {selectedModel.toUpperCase()}</span>}
+				</div>
 			</div>
 			<div className="main-container">
 				{!showResults ? (
