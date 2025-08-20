@@ -41,11 +41,6 @@ const Main = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 								<span>Hello{username ? `, ${username}` : ''} 👋</span>
 							</p>
 							<p>How can I help you today?</p>
-							{!apiKey && (
-								<div className="setup-message">
-									<p>🔧 Click the settings icon in the sidebar to configure your OpenRouter API key and start chatting!</p>
-								</div>
-							)}
 						</div>
 					</>
 				) : (
